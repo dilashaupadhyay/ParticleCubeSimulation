@@ -99,7 +99,7 @@ def render(particles):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    draw_cube_outline()
+    draw_cube_outline()  # Draw cube outline here
 
     for particle in particles:
         glPushMatrix()
