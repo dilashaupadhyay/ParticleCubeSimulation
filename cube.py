@@ -60,9 +60,46 @@ def draw_square(position, size):
     glVertex3f(position[0] - size / 2, position[1] + size / 2, position[2])
     glEnd()
 
+def draw_cube_outline():
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    glBegin(GL_QUADS)
+    glVertex3f(-1, -1, -1)
+    glVertex3f(1, -1, -1)
+    glVertex3f(1, 1, -1)
+    glVertex3f(-1, 1, -1)
+
+    glVertex3f(-1, -1, 1)
+    glVertex3f(1, -1, 1)
+    glVertex3f(1, 1, 1)
+    glVertex3f(-1, 1, 1)
+
+    glVertex3f(-1, -1, -1)
+    glVertex3f(-1, 1, -1)
+    glVertex3f(-1, 1, 1)
+    glVertex3f(-1, -1, 1)
+
+    glVertex3f(1, -1, -1)
+    glVertex3f(1, 1, -1)
+    glVertex3f(1, 1, 1)
+    glVertex3f(1, -1, 1)
+
+    glVertex3f(-1, -1, -1)
+    glVertex3f(1, -1, -1)
+    glVertex3f(1, -1, 1)
+    glVertex3f(-1, -1, 1)
+
+    glVertex3f(-1, 1, -1)
+    glVertex3f(1, 1, -1)
+    glVertex3f(1, 1, 1)
+    glVertex3f(-1, 1, 1)
+    glEnd()
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+
 def render(particles):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
+
+    draw_cube_outline()
 
     for particle in particles:
         glPushMatrix()
