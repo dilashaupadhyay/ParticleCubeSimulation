@@ -34,19 +34,33 @@ def create_particles(quantity):
         particles.append(Particle())
     return particles
 
-def handle_controls():
-    # Implement controls for adjusting parameters (speed, quantity, gravity)
-    pass
-
-def draw_square(position, size):
-    glBegin(GL_QUADS)
-    glVertex3f(position[0] - size / 2, position[1] - size / 2, position[2])
-    glVertex3f(position[0] + size / 2, position[1] - size / 2, position[2])
-    glVertex3f(position[0] + size / 2, position[1] + size / 2, position[2])
-    glVertex3f(position[0] - size / 2, position[1] + size / 2, position[2])
-    glEnd()
+def handle_controls(particles):
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP]:
+        # Increase particle speed
+        for particle in particles:
+            particle.velocity = [v * 1.1 for v in particle.velocity]
+    if keys[pygame.K_DOWN]:
+        # Decrease particle speed
+        for particle in particles:
+            particle.velocity = [v * 0.9 for v in particle.velocity]
+    if keys[pygame.K_RIGHT]:
+        # Increase particle quantity
+        particles.extend(create_particles(10))
+    if keys[pygame.K_LEFT]:
+        # Decrease particle quantity
+        if len(particles) > 10:
+            del particles[-10:]
 
 def render(particles):
+    def draw_square(position, size):
+        glBegin(GL_QUADS)
+        glVertex3f(position[0] - size / 2, position[1] - size / 2, position[2])
+        glVertex3f(position[0] + size / 2, position[1] - size / 2, position[2])
+        glVertex3f(position[0] + size / 2, position[1] + size / 2, position[2])
+        glVertex3f(position[0] - size / 2, position[1] + size / 2, position[2])
+        glEnd()
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
@@ -69,7 +83,7 @@ def main():
                 running = False
             # Handle other user inputs
 
-        handle_controls()
+        handle_controls(particles)
 
         for particle in particles:
             particle.update()
