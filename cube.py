@@ -52,15 +52,15 @@ def handle_controls(particles):
         if len(particles) > 10:
             del particles[-10:]
 
-def render(particles):
-    def draw_square(position, size):
-        glBegin(GL_QUADS)
-        glVertex3f(position[0] - size / 2, position[1] - size / 2, position[2])
-        glVertex3f(position[0] + size / 2, position[1] - size / 2, position[2])
-        glVertex3f(position[0] + size / 2, position[1] + size / 2, position[2])
-        glVertex3f(position[0] - size / 2, position[1] + size / 2, position[2])
-        glEnd()
+def draw_square(position, size):
+    glBegin(GL_QUADS)
+    glVertex3f(position[0] - size / 2, position[1] - size / 2, position[2])
+    glVertex3f(position[0] + size / 2, position[1] - size / 2, position[2])
+    glVertex3f(position[0] + size / 2, position[1] + size / 2, position[2])
+    glVertex3f(position[0] - size / 2, position[1] + size / 2, position[2])
+    glEnd()
 
+def render(particles):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
