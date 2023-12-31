@@ -34,7 +34,16 @@ class Particle:
         self.position[0] += self.velocity[0]
         self.position[1] += self.velocity[1]
         self.position[2] += self.velocity[2]
-        # Add gravity effect if needed
+        
+        # Constrain particle within the cube outline
+        cube_half_size = 0.05
+        for i in range(3):
+            if self.position[i] < -cube_half_size:
+                self.position[i] = -cube_half_size
+                self.velocity[i] *= -1  # Reverse velocity to simulate bouncing off walls
+            elif self.position[i] > cube_half_size:
+                self.position[i] = cube_half_size
+                self.velocity[i] *= -1  # Reverse velocity to simulate bouncing off walls
 
 def create_particles(quantity):
     particles = []
@@ -98,6 +107,7 @@ def main():
             particle.update()
 
         render(particles)
+        pygame.display.update()  # Update the display
 
     pygame.quit()
 
