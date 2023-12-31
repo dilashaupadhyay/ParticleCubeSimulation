@@ -17,9 +17,17 @@ gluLookAt(0, 0, 10, 0, 0, 0, 0, 1, 0)
 
 class Particle:
     def __init__(self):
-        self.position = [random.uniform(-2, 2), random.uniform(-2, 2), random.uniform(-2, 2)]
-        self.velocity = [random.uniform(-0.01, 0.01), random.uniform(-0.01, 0.01), random.uniform(-0.01, 0.01)]
-        self.size = 0.1
+        self.position = [
+            random.uniform(-0.05, 0.05),  # X coordinate within the cube
+            random.uniform(-0.05, 0.05),  # Y coordinate within the cube
+            random.uniform(-0.05, 0.05)   # Z coordinate within the cube
+        ]
+        self.velocity = [
+            random.uniform(-0.01, 0.01),
+            random.uniform(-0.01, 0.01),
+            random.uniform(-0.01, 0.01)
+        ]
+        self.size = 0.01
 
     def update(self):
         # Update particle position based on velocity
@@ -34,84 +42,50 @@ def create_particles(quantity):
         particles.append(Particle())
     return particles
 
-def handle_controls(particles):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        # Increase particle speed
-        for particle in particles:
-            particle.velocity = [v * 1.1 for v in particle.velocity]
-    if keys[pygame.K_DOWN]:
-        # Decrease particle speed
-        for particle in particles:
-            particle.velocity = [v * 0.9 for v in particle.velocity]
-    if keys[pygame.K_RIGHT]:
-        # Increase particle quantity
-        particles.extend(create_particles(10))
-    if keys[pygame.K_LEFT]:
-        # Decrease particle quantity
-        if len(particles) > 10:
-            del particles[-10:]
+def draw_cube_outline(size):
+    half_size = size / 2
+    vertices = [
+        [-half_size, -half_size, -half_size],
+        [half_size, -half_size, -half_size],
+        [half_size, half_size, -half_size],
+        [-half_size, half_size, -half_size],
+        [-half_size, -half_size, half_size],
+        [half_size, -half_size, half_size],
+        [half_size, half_size, half_size],
+        [-half_size, half_size, half_size]
+    ]
+    edges = [
+        [0, 1], [1, 2], [2, 3], [3, 0],
+        [4, 5], [5, 6], [6, 7], [7, 4],
+        [0, 4], [1, 5], [2, 6], [3, 7]
+    ]
 
-def draw_square(position, size):
-    glBegin(GL_QUADS)
-    glVertex3f(position[0] - size / 2, position[1] - size / 2, position[2])
-    glVertex3f(position[0] + size / 2, position[1] - size / 2, position[2])
-    glVertex3f(position[0] + size / 2, position[1] + size / 2, position[2])
-    glVertex3f(position[0] - size / 2, position[1] + size / 2, position[2])
+    glColor3f(1.0, 1.0, 1.0)  # Set outline color to white
+    glLineWidth(2.0)
+    glBegin(GL_LINES)
+    for edge in edges:
+        for vertex in edge:
+            glVertex3fv(vertices[vertex])
     glEnd()
-
-def draw_cube_outline():
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-    glBegin(GL_QUADS)
-    glVertex3f(-1, -1, -1)
-    glVertex3f(1, -1, -1)
-    glVertex3f(1, 1, -1)
-    glVertex3f(-1, 1, -1)
-
-    glVertex3f(-1, -1, 1)
-    glVertex3f(1, -1, 1)
-    glVertex3f(1, 1, 1)
-    glVertex3f(-1, 1, 1)
-
-    glVertex3f(-1, -1, -1)
-    glVertex3f(-1, 1, -1)
-    glVertex3f(-1, 1, 1)
-    glVertex3f(-1, -1, 1)
-
-    glVertex3f(1, -1, -1)
-    glVertex3f(1, 1, -1)
-    glVertex3f(1, 1, 1)
-    glVertex3f(1, -1, 1)
-
-    glVertex3f(-1, -1, -1)
-    glVertex3f(1, -1, -1)
-    glVertex3f(1, -1, 1)
-    glVertex3f(-1, -1, 1)
-
-    glVertex3f(-1, 1, -1)
-    glVertex3f(1, 1, -1)
-    glVertex3f(1, 1, 1)
-    glVertex3f(-1, 1, 1)
-    glEnd()
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
 def render(particles):
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    draw_cube_outline()  # Draw cube outline here
+    draw_cube_outline(0.1)  # Draw the cube outline of 100mm
 
     for particle in particles:
         glPushMatrix()
         glColor3f(1.0, 1.0, 1.0)  # Set particle color (white)
-        draw_square(particle.position, particle.size)
+        glTranslatef(particle.position[0], particle.position[1], particle.position[2])
+        glutSolidSphere(particle.size, 20, 20)  # Rendering particles as spheres
         glPopMatrix()
 
     pygame.display.flip()
 
 def main():
     running = True
-    particles = create_particles(100)
+    particles = create_particles(500)  # Increased particles for better visibility
     gravity_enabled = True
 
     while running:
@@ -119,8 +93,6 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             # Handle other user inputs
-
-        handle_controls(particles)
 
         for particle in particles:
             particle.update()
