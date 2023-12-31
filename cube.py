@@ -45,6 +45,7 @@ class ParticleSimulation:
     def create_particles(self):
         # Create particles and add them to the list
         # Implement particle creation logic here
+        pass
 
     def update(self):
         # Update all particles in the simulation
@@ -73,6 +74,7 @@ def setup_gui():
 
     # Add GUI components (buttons, sliders, etc.)
     # Implement GUI setup here
+    pass
 
     root.mainloop()
 
