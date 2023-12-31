@@ -1,115 +1,105 @@
-import pygame
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
+import sys
 import random
+import OpenGL.GL as gl
+from OpenGL.GLUT import *
+from OpenGL.GL import *
+from OpenGL.GLU import *
+import tkinter as tk
 
-# Initialize Pygame
-pygame.init()
-# Set up the window and OpenGL context
-width, height = 800, 600
-pygame.display.set_mode((width, height), pygame.OPENGL | pygame.DOUBLEBUF)
-glViewport(0, 0, width, height)
-glMatrixMode(GL_PROJECTION)
-gluPerspective(45, (width / height), 0.1, 50.0)
-glMatrixMode(GL_MODELVIEW)
-gluLookAt(0, 0, 10, 0, 0, 0, 0, 1, 0)
-
+# Particle class representing each particle in the simulation
 class Particle:
-    def __init__(self):
-        self.position = [
-            random.uniform(-0.05, 0.05),  # X coordinate within the cube
-            random.uniform(-0.05, 0.05),  # Y coordinate within the cube
-            random.uniform(-0.05, 0.05)   # Z coordinate within the cube
-        ]
-        self.velocity = [
-            random.uniform(-0.01, 0.01),
-            random.uniform(-0.01, 0.01),
-            random.uniform(-0.01, 0.01)
-        ]
-        self.size = 0.01
+    def __init__(self, x, y, z, radius):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.radius = radius
+        self.vx = random.uniform(-0.1, 0.1)  # Initial velocities
+        self.vy = random.uniform(-0.1, 0.1)
+        self.vz = random.uniform(-0.1, 0.1)
 
     def update(self):
-        # Update particle position based on velocity
-        self.position[0] += self.velocity[0]
-        self.position[1] += self.velocity[1]
-        self.position[2] += self.velocity[2]
-        
-        # Constrain particle within the cube outline
-        cube_half_size = 0.05
-        for i in range(3):
-            if self.position[i] < -cube_half_size:
-                self.position[i] = -cube_half_size
-                self.velocity[i] *= -1  # Reverse velocity to simulate bouncing off walls
-            elif self.position[i] > cube_half_size:
-                self.position[i] = cube_half_size
-                self.velocity[i] *= -1  # Reverse velocity to simulate bouncing off walls
+        # Update particle position based on velocities
+        self.x += self.vx
+        self.y += self.vy
+        self.z += self.vz
 
-def create_particles(quantity):
-    particles = []
-    for _ in range(quantity):
-        particles.append(Particle())
-    return particles
+        # Handle collisions with cube walls
+        # Implement collision logic here
 
-def draw_cube_outline(size):
-    half_size = size / 2
-    vertices = [
-        [-half_size, -half_size, -half_size],
-        [half_size, -half_size, -half_size],
-        [half_size, half_size, -half_size],
-        [-half_size, half_size, -half_size],
-        [-half_size, -half_size, half_size],
-        [half_size, -half_size, half_size],
-        [half_size, half_size, half_size],
-        [-half_size, half_size, half_size]
-    ]
-    edges = [
-        [0, 1], [1, 2], [2, 3], [3, 0],
-        [4, 5], [5, 6], [6, 7], [7, 4],
-        [0, 4], [1, 5], [2, 6], [3, 7]
-    ]
+        # Handle gravity and other forces
+        # Implement force calculations here
 
-    glColor3f(1.0, 1.0, 1.0)  # Set outline color to white
-    glLineWidth(2.0)
-    glBegin(GL_LINES)
-    for edge in edges:
-        for vertex in edge:
-            glVertex3fv(vertices[vertex])
-    glEnd()
+    def draw(self):
+        # Draw the particle
+        glPushMatrix()
+        glTranslate(self.x, self.y, self.z)
+        glutSolidSphere(self.radius, 20, 20)
+        glPopMatrix()
 
-def render(particles):
+# Simulation class managing particles and simulation logic
+class ParticleSimulation:
+    def __init__(self):
+        self.particles = []  # List to store particles
+        self.create_particles()
+
+    def create_particles(self):
+        # Create particles and add them to the list
+        # Implement particle creation logic here
+
+    def update(self):
+        # Update all particles in the simulation
+        for particle in self.particles:
+            particle.update()
+
+    def draw(self):
+        # Draw all particles in the simulation
+        for particle in self.particles:
+            particle.draw()
+
+# OpenGL functions for rendering
+def draw():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    draw_cube_outline(0.1)  # Draw the cube outline of 100mm
+    simulation.update()  # Update simulation
+    simulation.draw()    # Draw simulation
 
-    for particle in particles:
-        glPushMatrix()
-        glColor3f(1.0, 1.0, 1.0)  # Set particle color (white)
-        glTranslatef(particle.position[0], particle.position[1], particle.position[2])
-        glutSolidSphere(particle.size, 20, 20)  # Rendering particles as spheres
-        glPopMatrix()
+    glutSwapBuffers()
 
-    pygame.display.flip()
+# GUI setup using Tkinter
+def setup_gui():
+    root = tk.Tk()
+    root.title("Particle Simulation")
 
+    # Add GUI components (buttons, sliders, etc.)
+    # Implement GUI setup here
+
+    root.mainloop()
+
+# Main function to initialize OpenGL and start the simulation
 def main():
-    running = True
-    particles = create_particles(500)  # Increased particles for better visibility
-    gravity_enabled = True
+    glutInit(sys.argv)
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+    glutInitWindowSize(800, 600)
+    glutCreateWindow(b"Particle Simulation")
 
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            # Handle other user inputs
+    glEnable(GL_DEPTH_TEST)
+    glClearColor(0.0, 0.0, 0.0, 1.0)
 
-        for particle in particles:
-            particle.update()
+    glMatrixMode(GL_PROJECTION)
+    gluPerspective(45, (800 / 600), 0.1, 50.0)
+    glMatrixMode(GL_MODELVIEW)
+    gluLookAt(0, 0, 10, 0, 0, 0, 0, 1, 0)
 
-        render(particles)
-        pygame.display.update()  # Update the display
+    glutDisplayFunc(draw)
+    glutIdleFunc(draw)
 
-    pygame.quit()
+    global simulation
+    simulation = ParticleSimulation()
+
+    setup_gui()  # Start GUI
+
+    glutMainLoop()
 
 if __name__ == "__main__":
     main()
