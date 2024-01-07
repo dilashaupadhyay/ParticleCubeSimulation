@@ -57,7 +57,7 @@ class Particle:
                 self.velocity[i] *= -1
 
 # Create a list of particles
-num_particles = 100
+num_particles = 300  # Increase the number of particles
 particles = [Particle() for _ in range(num_particles)]
 
 # Function to draw the cube
@@ -72,10 +72,10 @@ def draw_cube():
 
 # Function to draw particles
 def draw_particles():
-    glPointSize(2)
+    glPointSize(5)  # Increase the size of the particles
     glBegin(GL_POINTS)
     for particle in particles:
-        glColor3fv(particle.color)  # Use particle's color
+        glColor3fv((1.0, 1.0, 1.0))  # Set particles to white color
         glVertex3fv(particle.position)
     glEnd()
 
