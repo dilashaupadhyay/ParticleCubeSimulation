@@ -98,6 +98,7 @@ class ParticleSimulation:
             pygame.display.flip()
             pygame.time.wait(10)
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     sim = ParticleSimulation(100)
     sim.run()
+    
