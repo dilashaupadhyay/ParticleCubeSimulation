@@ -1,2 +1,2 @@
 # ParticleCubeSimulation
-ParticleCubeSimulation" is an interactive Python-based project utilizing OpenGL to simulate particle behavior within a 3D cube. This simulation offers users control over particle quantities, velocities, and the influence of gravity, providing an engaging platform to explore particle physics in a visually immersive environmen
+A Python script utilizing Pygame and OpenGL to create a dynamic 3D simulation with a rotating cube and interacting particles featuring collision detection and response, causing particles to exchange velocities upon impact within the cube boundaries.
